@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bude Breakfast — Group Pre-Order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: 'Inter', sans-serif; background: #FAF6EC; color: #2F4538; -webkit-tap-highlight-color: transparent; }
+  body { min-height: 100vh; }
+  .display { font-family: 'Cormorant Garamond', serif; }
+  .menu-bg { background: #2F4538; color: #F5EBD6; }
+  .cream-bg { background: #F5EBD6; }
+  .accent { color: #C66F3D; }
+  .accent-bg { background: #C66F3D; color: #F5EBD6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 1.25rem; }
+
+  /* Name gate */
+  .gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+  .gate-inner { max-width: 380px; width: 100%; }
+  .gate .eyebrow { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.75rem; }
+  .gate h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 600; line-height: 1.1; margin-bottom: 0.75rem; }
+  .gate p { font-size: 0.9rem; opacity: 0.7; line-height: 1.5; margin-bottom: 2rem; }
+  input[type=text] { width: 100%; padding: 0.85rem 1rem; background: #F5EBD6; color: #2F4538; border: 1px solid #E8DCC0; border-radius: 2px; font-family: inherit; font-size: 0.9rem; outline: none; }
+  input[type=text]:focus { border-color: #2F4538; }
+
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  .btn-primary { width: 100%; background: #2F4538; color: #F5EBD6; padding: 1rem; border-radius: 2px; font-weight: 500; font-size: 0.9rem; letter-spacing: 0.02em; transition: opacity 0.15s; margin-top: 0.75rem; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Header */
+  header { background: #2F4538; color: #F5EBD6; padding: 1.75rem 1.25rem; }
+  header .row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; max-width: 900px; margin: 0 auto; }
+  header .eyebrow { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.7; margin-bottom: 0.5rem; }
+  header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 500; line-height: 1.1; }
+  header .name-line { font-size: 0.75rem; opacity: 0.7; margin-top: 0.5rem; }
+  header .name-line button { text-decoration: underline; opacity: 0.7; }
+  header .name-line button:hover { opacity: 1; }
+  .toggle-btn { background: #F5EBD6; color: #2F4538; padding: 0.75rem 1rem; border-radius: 999px; font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; transition: opacity 0.15s; }
+  .toggle-btn:hover { opacity: 0.9; }
+  .badge { background: #C66F3D; color: #F5EBD6; border-radius: 999px; min-width: 1.5rem; height: 1.5rem; padding: 0 0.4rem; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; }
+
+  main { padding: 2.5rem 1.25rem; max-width: 900px; margin: 0 auto; }
+
+  /* My orders panel */
+  .my-panel { background: #2F4538; color: #F5EBD6; padding: 1.25rem; border-radius: 2px; margin-bottom: 2.5rem; }
+  .my-panel .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; margin-bottom: 0.75rem; }
+  .my-line { display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0; }
+  .my-line span.text { flex: 1; font-size: 0.85rem; }
+  .my-line .opts { opacity: 0.6; font-size: 0.7rem; margin-left: 0.5rem; }
+  .qty-controls { display: flex; align-items: center; gap: 0.5rem; }
+  .qty-btn { width: 1.5rem; height: 1.5rem; border: 1px solid rgba(245,235,214,0.4); border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+  .qty-btn:hover { opacity: 0.7; }
+  .qty-num { font-size: 0.75rem; width: 1rem; text-align: center; }
+  .trash-btn { margin-left: 0.25rem; opacity: 0.6; padding: 0.25rem; }
+  .trash-btn:hover { opacity: 1; }
+
+  /* Section header */
+  .section-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .section-head h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.875rem; font-weight: 500; }
+  .section-head .rule { flex: 1; border-top: 1px solid #2F4538; opacity: 0.2; min-width: 2rem; }
+  .section-head .meta { font-size: 0.7rem; opacity: 0.6; }
+  .refresh-btn { font-size: 0.7rem; opacity: 0.7; display: flex; align-items: center; gap: 0.4rem; }
+  .refresh-btn:hover { opacity: 1; }
+  .refresh-btn .ico.spin { animation: spin 0.6s linear; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Menu grid */
+  .menu-grid { display: grid; gap: 1rem; }
+  @media (min-width: 640px) { .menu-grid { grid-template-columns: 1fr 1fr; } }
+  .menu-card { background: #F5EBD6; border: 1px solid #E8DCC0; border-radius: 2px; padding: 1.25rem; text-align: left; transition: border-color 0.15s; cursor: pointer; }
+  .menu-card:hover { border-color: #2F4538; }
+  .menu-card .top { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.5rem; }
+  .menu-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 600; line-height: 1.2; transition: color 0.15s; }
+  .menu-card:hover h3 { color: #C66F3D; }
+  .menu-card .price { font-weight: 500; font-size: 0.85rem; white-space: nowrap; }
+  .menu-card .desc { font-size: 0.85rem; opacity: 0.75; line-height: 1.5; margin-bottom: 0.75rem; }
+  .menu-card .footer { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .tag { font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.6; border: 1px solid rgba(47,69,56,0.3); padding: 0.1rem 0.5rem; border-radius: 999px; }
+  .add-arrow { margin-left: auto; font-size: 0.75rem; color: #C66F3D; transition: transform 0.15s; }
+  .menu-card:hover .add-arrow { transform: translateX(0.25rem); }
+
+  /* Group / summary */
+  .summary-meta { font-size: 0.85rem; opacity: 0.6; margin-bottom: 2rem; }
+  .person-card { padding: 1.25rem; border-radius: 2px; border: 1px solid; margin-bottom: 1rem; }
+  .person-card.me { background: #2F4538; color: #F5EBD6; border-color: #2F4538; }
+  .person-card.other { background: #F5EBD6; color: #2F4538; border-color: #E8DCC0; }
+  .person-card .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.75rem; padding-bottom: 0.75rem; }
+  .person-card.me .head { border-bottom: 1px solid rgba(245,235,214,0.2); }
+  .person-card.other .head { border-bottom: 1px solid rgba(47,69,56,0.15); }
+  .person-card .name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 600; }
+  .person-card .you { font-family: 'Inter', sans-serif; font-size: 0.7rem; opacity: 0.7; font-weight: 400; margin-left: 0.5rem; }
+  .person-card .total { font-size: 0.85rem; font-weight: 500; }
+  .person-line { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.2rem 0; }
+  .person-line .opts { opacity: 0.6; font-size: 0.7rem; margin-left: 0.5rem; }
+  .person-line .price-side { opacity: 0.7; margin-left: 0.75rem; white-space: nowrap; }
+
+  .ticket { border: 2px dashed rgba(47,69,56,0.3); padding: 1.25rem; border-radius: 2px; margin-top: 2.5rem; }
+  .ticket .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6; margin-bottom: 1rem; }
+  .ticket-line { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.2rem 0; }
+  .ticket-line .qty-mark { font-weight: 600; }
+  .ticket .total-row { display: flex; justify-content: space-between; padding-top: 0.75rem; margin-top: 0.75rem; border-top: 1px solid rgba(47,69,56,0.2); font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 600; }
+
+  .empty { text-align: center; padding: 4rem 1rem; }
+  .empty p { opacity: 0.6; margin-bottom: 1rem; }
+
+  /* Modal */
+  .modal-bg { position: fixed; inset: 0; background: rgba(47,69,56,0.6); z-index: 50; display: flex; align-items: flex-end; justify-content: center; padding: 0; }
+  @media (min-width: 640px) { .modal-bg { align-items: center; padding: 1rem; } }
+  .modal { width: 100%; max-width: 32rem; max-height: 90vh; overflow: hidden; background: #FAF6EC; border-radius: 1rem 1rem 0 0; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); display: flex; flex-direction: column; }
+  @media (min-width: 640px) { .modal { border-radius: 2px; } }
+  .modal-content { padding: 1.5rem; overflow-y: auto; }
+  .modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; }
+  .modal-head h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; line-height: 1.2; }
+  .modal-head .price { font-size: 0.85rem; opacity: 0.7; margin-top: 0.25rem; }
+  .close-btn { padding: 0.25rem; font-size: 1.5rem; line-height: 1; }
+  .modal-desc { font-size: 0.85rem; opacity: 0.8; line-height: 1.5; margin-bottom: 1.25rem; }
+
+  .opt-group { margin-bottom: 1rem; }
+  .opt-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; display: block; margin-bottom: 0.5rem; }
+  .opt-required { color: #C66F3D; }
+  .opt-choices { display: grid; gap: 0.5rem; }
+  .choice-btn { text-align: left; padding: 0.75rem 1rem; border: 1px solid #E8DCC0; background: #F5EBD6; color: #2F4538; border-radius: 2px; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; transition: all 0.15s; }
+  .choice-btn:hover { border-color: #2F4538; }
+  .choice-btn.selected { background: #2F4538; color: #F5EBD6; border-color: #2F4538; }
+  .choice-btn .extra { font-size: 0.7rem; opacity: 0.7; }
+
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: #2F4538; color: #F5EBD6; padding: 0.75rem 1.25rem; border-radius: 999px; font-size: 0.85rem; box-shadow: 0 8px 16px rgba(0,0,0,0.15); z-index: 100; animation: toast-in 0.2s ease-out; }
+  .toast.error { background: #C66F3D; }
+  @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 0.5rem); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+  .loading-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .loading-screen p { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; }
+
+  .footer-note { font-size: 0.7rem; opacity: 0.5; text-align: center; margin-top: 3rem; font-style: italic; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbyxk-5v1LqM4v-KNveaOMijIU6E5IF5rZ1mExzEaLwVF5GMvThqmDgBRgI2xmlZv64mHg/exec";
+
+const MENU = [
+  { id: "big-bude", name: "Big Bude Breakfast", price: 15.45, description: "Local pork sausages x2, smoked bacon x2, hogs pudding, hash brown, portobello mushroom, baked tomato, baked beans and fried or poached egg x2 with sourdough toast.", tags: ["GFO"], options: [{ id: "egg", label: "Eggs", required: true, choices: ["Fried", "Poached"] }] },
+  { id: "small-bude", name: "Small Bude Breakfast", price: 10.95, description: "Local pork sausage, smoked bacon, hogs pudding, hash brown, portobello mushroom, baked tomato, baked beans and a fried or poached egg with sourdough toast.", tags: ["GFO"], options: [{ id: "egg", label: "Egg", required: true, choices: ["Fried", "Poached"] }] },
+  { id: "veggie", name: "Vegetarian Breakfast", price: 11.45, description: "Vegetarian sausages x2, portobello mushroom, hash brown, baked tomato, beans, poached or fried egg, toasted sourdough.", tags: ["GFO", "V"], options: [{ id: "egg", label: "Egg", required: true, choices: ["Fried", "Poached"] }] },
+  { id: "smashed-avo", name: "Smashed Avocado on Toast", price: 9.95, description: "Smashed avocado & poached eggs on toasted sourdough.", tags: ["GFO", "V"], options: [{ id: "addon", label: "Add an extra", required: false, choices: [{ label: "None", price: 0 }, { label: "Local smoked bacon", price: 3 }, { label: "Smoked salmon", price: 4 }] }] },
+  { id: "benedict", name: "Eggs Benedict", price: 9.45, description: "English muffin, 2 bacon, 2 poached eggs and hollandaise sauce.", tags: [], options: [{ id: "swap", label: "Protein", required: true, choices: [{ label: "Bacon", price: 0 }, { label: "Smoked salmon", price: 3 }] }] },
+  { id: "pancakes", name: "American Style Pancakes", price: 8.45, description: "Choose streaky bacon & maple syrup, or Nutella & strawberries with maple syrup.", tags: ["V"], options: [{ id: "style", label: "Style", required: true, choices: ["Bacon & maple syrup", "Nutella, strawberries & maple syrup"] }] },
+  { id: "bap-full", name: "Breakfast Bap (Full)", price: 8.45, description: "Local pork sausage, smoked bacon, fried egg.", tags: ["GFO"], options: [] },
+  { id: "bap-single", name: "Breakfast Bap (Single Filling)", price: 7.25, description: "Choose just one filling.", tags: ["GFO"], options: [{ id: "filling", label: "Filling", required: true, choices: ["Bacon", "Sausages", "Eggs", "Vegetarian sausages"] }] },
+  { id: "sourdough", name: "Sourdough Toast", price: 4.45, description: "Served with butter, jam or honey.", tags: ["V", "VE options"], options: [{ id: "spread", label: "Spread", required: true, choices: ["Butter", "Jam", "Honey"] }] },
+  { id: "teacake", name: "Toasted Teacake", price: 3.5, description: "Served with butter. Add jam or honey for £1.00.", tags: ["V"], options: [{ id: "addon", label: "Add", required: false, choices: [{ label: "Just butter", price: 0 }, { label: "Add jam", price: 1 }, { label: "Add honey", price: 1 }] }] },
+  { id: "granola", name: "Granola", price: 8.45, description: "Toasted granola, summer berries, honey & yoghurt.", tags: ["V"], options: [] },
+  { id: "pastries", name: "Freshly Baked Pastries", price: 2.45, description: "Please ask the team for our pastry of the day.", tags: [], options: [] },
+];
+
+const choicePrice = c => typeof c === "string" ? 0 : (c.price || 0);
+const choiceLabel = c => typeof c === "string" ? c : c.label;
+
+// State
+let state = {
+  name: "",
+  nameLocked: false,
+  orders: [],
+  loading: true,
+  refreshing: false,
+  selectedItem: null,
+  draftSelections: {},
+  view: "menu", // menu | summary
+};
+
+// API
+async function apiGet() {
+  try {
+    const res = await fetch(API_URL, { method: "GET" });
+    const data = await res.json();
+    return data.orders || [];
+  } catch (e) {
+    showToast("Couldn't load orders. Check your connection.", true);
+    return null;
+  }
+}
+
+async function apiPost(body) {
+  try {
+    // text/plain avoids CORS preflight for Apps Script
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    return data.orders || [];
+  } catch (e) {
+    showToast("Couldn't save. Try again.", true);
+    return null;
+  }
+}
+
+function showToast(msg, isError) {
+  const t = document.createElement("div");
+  t.className = "toast" + (isError ? " error" : "");
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2400);
+}
+
+// LocalStorage for the user's own name (per-device)
+function loadName() {
+  try { return localStorage.getItem("bude-name") || ""; } catch { return ""; }
+}
+function saveName(n) {
+  try { localStorage.setItem("bude-name", n); } catch {}
+}
+
+// Helpers
+function itemTotal(item, selections) {
+  let total = item.price;
+  item.options.forEach(opt => {
+    const sel = selections[opt.id];
+    if (sel) total += choicePrice(sel);
+  });
+  return total;
+}
+
+function aggregateByItem(orders) {
+  const map = new Map();
+  orders.forEach(o => {
+    const sel = Object.values(o.selections).join(", ");
+    const label = sel ? o.itemName + " (" + sel + ")" : o.itemName;
+    if (!map.has(label)) map.set(label, { label, qty: 0, subtotal: 0 });
+    const entry = map.get(label);
+    entry.qty += o.qty;
+    entry.subtotal += o.unitPrice * o.qty;
+  });
+  return [...map.values()].sort((a,b) => b.qty - a.qty);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+// Render
+function render() {
+  const app = document.getElementById("app");
+
+  if (state.loading) {
+    app.innerHTML = '<div class="loading-screen"><p>Loading...</p></div>';
+    return;
+  }
+
+  if (!state.nameLocked) { renderGate(); return; }
+
+  app.innerHTML = renderHeader() + '<main>' +
+    (state.view === "menu" ? renderMenu() : renderSummary()) +
+    '<p class="footer-note">Lakeside Restaurant, Bude · Pre-orders confirmed by phone before pickup.</p>' +
+    '</main>' +
+    (state.selectedItem ? renderModal() : "");
+
+  attachHandlers();
+}
+
+function renderGate() {
+  const peopleCount = new Set(state.orders.map(o => o.person)).size;
+  document.getElementById("app").innerHTML = `
+    <div class="gate"><div class="gate-inner">
+      <p class="eyebrow">Lakeside · Bude</p>
+      <h1>Group Breakfast Pre-Order</h1>
+      <p>Pop your name in to get started. Everyone using this link adds to one shared order.</p>
+      <input type="text" id="name-input" placeholder="Your name" autofocus value="${escapeHtml(state.name)}" />
+      <button class="btn-primary" id="name-submit" ${state.name.trim() ? "" : "disabled"}>Continue</button>
+      ${peopleCount > 0 ? `<p style="font-size:0.75rem;opacity:0.6;text-align:center;margin-top:1.5rem;">${peopleCount} ${peopleCount===1?"person has":"people have"} ordered so far</p>` : ""}
+    </div></div>
+  `;
+
+  const input = document.getElementById("name-input");
+  const submit = document.getElementById("name-submit");
+  input.addEventListener("input", e => {
+    state.name = e.target.value;
+    submit.disabled = !state.name.trim();
+  });
+  input.addEventListener("keydown", e => { if (e.key === "Enter") submit.click(); });
+  submit.addEventListener("click", () => {
+    const trimmed = state.name.trim();
+    if (!trimmed) return;
+    state.name = trimmed;
+    state.nameLocked = true;
+    saveName(trimmed);
+    render();
+  });
+}
+
+function renderHeader() {
+  const myCount = state.orders.filter(o => o.person === state.name).reduce((n,o)=>n+o.qty,0);
+  const totalCount = state.orders.reduce((n,o)=>n+o.qty,0);
+  return `
+    <header><div class="row">
+      <div>
+        <p class="eyebrow">Lakeside · Bude</p>
+        <h1>Group Breakfast</h1>
+        <p class="name-line">Ordering as <strong>${escapeHtml(state.name)}</strong> · <button id="change-name">not you?</button></p>
+      </div>
+      <button class="toggle-btn" id="toggle-view">
+        ${state.view === "menu"
+          ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+             <span>Group order</span>${totalCount>0?`<span class="badge">${totalCount}</span>`:""}`
+          : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+             <span>Menu</span>`}
+      </button>
+    </div></header>
+  `;
+}
+
+function renderMenu() {
+  const myOrders = state.orders.filter(o => o.person === state.name);
+  const myTotal = myOrders.reduce((s,o) => s + o.unitPrice * o.qty, 0);
+  const myCount = myOrders.reduce((n,o)=>n+o.qty,0);
+
+  let html = "";
+
+  if (myOrders.length > 0) {
+    html += `<div class="my-panel">
+      <p class="label">Your items (${myCount}) · £${myTotal.toFixed(2)}</p>
+      ${myOrders.map(o => {
+        const opts = Object.values(o.selections).join(", ");
+        return `<div class="my-line">
+          <span class="text">${o.qty}× ${escapeHtml(o.itemName)}${opts?`<span class="opts">(${escapeHtml(opts)})</span>`:""}</span>
+          <div class="qty-controls">
+            <button class="qty-btn" data-action="dec" data-id="${o.lineId}">−</button>
+            <span class="qty-num">${o.qty}</span>
+            <button class="qty-btn" data-action="inc" data-id="${o.lineId}">+</button>
+            <button class="trash-btn" data-action="del" data-id="${o.lineId}" aria-label="Remove">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+            </button>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }
+
+  html += `<div class="section-head">
+    <h2 class="display">The Menu</h2>
+    <div class="rule"></div>
+    <p class="meta">Served 9–11:30am · GFO = gluten-free option</p>
+  </div>
+  <div class="menu-grid">
+    ${MENU.map(item => `
+      <button class="menu-card" data-item="${item.id}">
+        <div class="top">
+          <h3>${escapeHtml(item.name)}</h3>
+          <span class="price">£${item.price.toFixed(2)}</span>
+        </div>
+        <p class="desc">${escapeHtml(item.description)}</p>
+        <div class="footer">
+          ${item.tags.map(t => `<span class="tag">${t}</span>`).join("")}
+          <span class="add-arrow">Add →</span>
+        </div>
+      </button>
+    `).join("")}
+  </div>`;
+
+  return html;
+}
+
+function renderSummary() {
+  const peopleCount = new Set(state.orders.map(o => o.person)).size;
+  const groupTotal = state.orders.reduce((s,o) => s + o.unitPrice * o.qty, 0);
+  const totalItems = state.orders.reduce((n,o)=>n+o.qty,0);
+
+  // group by person
+  const byPerson = {};
+  state.orders.forEach(o => {
+    if (!byPerson[o.person]) byPerson[o.person] = [];
+    byPerson[o.person].push(o);
+  });
+
+  let html = `<div class="section-head">
+    <h2 class="display">Group Order</h2>
+    <div class="rule"></div>
+    <button class="refresh-btn" id="refresh-btn">
+      <svg class="ico${state.refreshing?" spin":""}" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      Refresh
+    </button>
+  </div>
+  <p class="summary-meta">${peopleCount} ${peopleCount===1?"person":"people"} · ${totalItems} items · £${groupTotal.toFixed(2)} total</p>`;
+
+  if (state.orders.length === 0) {
+    html += `<div class="empty">
+      <p>No orders yet.</p>
+      <button class="btn-primary" style="max-width:240px;margin:0 auto;" id="empty-browse">Browse the menu</button>
+    </div>`;
+    return html;
+  }
+
+  html += Object.entries(byPerson).map(([person, list]) => {
+    const total = list.reduce((s,o) => s + o.unitPrice * o.qty, 0);
+    const isMe = person === state.name;
+    return `<div class="person-card ${isMe?"me":"other"}">
+      <div class="head">
+        <p class="name">${escapeHtml(person)}${isMe?'<span class="you">(you)</span>':""}</p>
+        <p class="total">£${total.toFixed(2)}</p>
+      </div>
+      ${list.map(o => {
+        const opts = Object.values(o.selections).join(", ");
+        return `<div class="person-line">
+          <span>${o.qty}× ${escapeHtml(o.itemName)}${opts?` <span class="opts">(${escapeHtml(opts)})</span>`:""}</span>
+          <span class="price-side">£${(o.unitPrice * o.qty).toFixed(2)}</span>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }).join("");
+
+  html += `<div class="ticket">
+    <p class="label">Kitchen Ticket — combined order</p>
+    ${aggregateByItem(state.orders).map(line => `
+      <div class="ticket-line">
+        <span><span class="qty-mark">${line.qty}×</span> ${escapeHtml(line.label)}</span>
+        <span style="opacity:0.7;">£${line.subtotal.toFixed(2)}</span>
+      </div>
+    `).join("")}
+    <div class="total-row"><span>Total</span><span>£${groupTotal.toFixed(2)}</span></div>
+  </div>`;
+
+  return html;
+}
+
+function renderModal() {
+  const item = state.selectedItem;
+  const total = itemTotal(item, state.draftSelections);
+  return `<div class="modal-bg" id="modal-bg"><div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-head">
+        <div>
+          <h3>${escapeHtml(item.name)}</h3>
+          <p class="price">£${item.price.toFixed(2)}</p>
+        </div>
+        <button class="close-btn" id="modal-close">×</button>
+      </div>
+      <p class="modal-desc">${escapeHtml(item.description)}</p>
+      ${item.options.map(opt => `
+        <div class="opt-group">
+          <label class="opt-label">${escapeHtml(opt.label)} ${opt.required?'<span class="opt-required">*</span>':""}</label>
+          <div class="opt-choices">
+            ${opt.choices.map((c, idx) => {
+              const lbl = choiceLabel(c);
+              const pr = choicePrice(c);
+              const sel = choiceLabel(state.draftSelections[opt.id]) === lbl;
+              return `<button class="choice-btn ${sel?"selected":""}" data-opt="${opt.id}" data-choice-idx="${idx}">
+                <span>${escapeHtml(lbl)}</span>
+                ${pr > 0 ? `<span class="extra">+£${pr.toFixed(2)}</span>` : ""}
+              </button>`;
+            }).join("")}
+          </div>
+        </div>
+      `).join("")}
+      <button class="btn-primary" id="add-order-btn">Add to group order — £${total.toFixed(2)}</button>
+    </div>
+  </div></div>`;
+}
+
+// Event handlers
+function attachHandlers() {
+  const $ = id => document.getElementById(id);
+
+  if ($("change-name")) $("change-name").addEventListener("click", () => { state.nameLocked = false; render(); });
+  if ($("toggle-view")) $("toggle-view").addEventListener("click", async () => {
+    state.view = state.view === "menu" ? "summary" : "menu";
+    if (state.view === "summary") {
+      const fresh = await apiGet();
+      if (fresh) state.orders = fresh;
+    }
+    render();
+  });
+  if ($("refresh-btn")) $("refresh-btn").addEventListener("click", async () => {
+    state.refreshing = true; render();
+    const fresh = await apiGet();
+    if (fresh) state.orders = fresh;
+    state.refreshing = false;
+    setTimeout(render, 300);
+  });
+  if ($("empty-browse")) $("empty-browse").addEventListener("click", () => { state.view = "menu"; render(); });
+
+  document.querySelectorAll(".menu-card").forEach(c => {
+    c.addEventListener("click", () => {
+      const item = MENU.find(m => m.id === c.dataset.item);
+      const initial = {};
+      item.options.forEach(opt => { if (opt.required) initial[opt.id] = opt.choices[0]; });
+      state.selectedItem = item;
+      state.draftSelections = initial;
+      render();
+    });
+  });
+
+  document.querySelectorAll(".my-line .qty-btn, .my-line .trash-btn").forEach(b => {
+    b.addEventListener("click", async () => {
+      const id = b.dataset.id;
+      const action = b.dataset.action;
+      const order = state.orders.find(o => o.lineId === id);
+      if (!order) return;
+      if (action === "del") {
+        const fresh = await apiPost({ action: "remove", lineId: id });
+        if (fresh) state.orders = fresh;
+      } else {
+        const newQty = order.qty + (action === "inc" ? 1 : -1);
+        const fresh = await apiPost({ action: "updateQty", lineId: id, qty: newQty });
+        if (fresh) state.orders = fresh;
+      }
+      render();
+    });
+  });
+
+  if ($("modal-bg")) {
+    $("modal-bg").addEventListener("click", e => { if (e.target.id === "modal-bg") { state.selectedItem = null; render(); } });
+    $("modal-close").addEventListener("click", () => { state.selectedItem = null; render(); });
+    document.querySelectorAll(".choice-btn").forEach(b => {
+      b.addEventListener("click", () => {
+        const optId = b.dataset.opt;
+        const idx = parseInt(b.dataset.choiceIdx);
+        const opt = state.selectedItem.options.find(o => o.id === optId);
+        state.draftSelections[optId] = opt.choices[idx];
+        render();
+      });
+    });
+    $("add-order-btn").addEventListener("click", async () => {
+      const item = state.selectedItem;
+      const sel = state.draftSelections;
+      const newOrder = {
+        lineId: item.id + "-" + Date.now() + "-" + Math.random().toString(36).slice(2,6),
+        person: state.name,
+        itemName: item.name,
+        selections: Object.fromEntries(Object.entries(sel).map(([k,v]) => [k, choiceLabel(v)])),
+        qty: 1,
+        unitPrice: itemTotal(item, sel),
+        createdAt: Date.now(),
+      };
+      state.selectedItem = null;
+      const fresh = await apiPost({ action: "add", order: newOrder });
+      if (fresh) state.orders = fresh;
+      showToast("Added to group order");
+      render();
+    });
+  }
+}
+
+// Auto-refresh on summary view
+setInterval(async () => {
+  if (state.view === "summary" && state.nameLocked && !state.selectedItem) {
+    const fresh = await apiGet();
+    if (fresh) {
+      const changed = JSON.stringify(fresh) !== JSON.stringify(state.orders);
+      state.orders = fresh;
+      if (changed) render();
+    }
+  }
+}, 8000);
+
+// Init
+(async () => {
+  const savedName = loadName();
+  if (savedName) {
+    state.name = savedName;
+    state.nameLocked = true;
+  }
+  const orders = await apiGet();
+  if (orders) state.orders = orders;
+  state.loading = false;
+  render();
+})();
+</script>
+</body>
+</html>
